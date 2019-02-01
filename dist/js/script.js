@@ -11,3 +11,7 @@ let tabsComponent = new Tabs({
   element: document.querySelector('[data-component="tabs"]'),
   tabs: tabs,
 })
+
+tabsComponent.subscribe('tab-selected', ({ title, content }) => {
+  console.log(`Tab ${ title } was selected \n ${content}`);
+});
