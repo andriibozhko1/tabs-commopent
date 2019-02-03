@@ -4,7 +4,6 @@ export default class Tabs {
         this.tabs = tabs;
         this.callBackObj = {};
         this.currentTab = tabs[0];
-        this.eventNames = [];
 
         this.render();
         this.addEvents();
@@ -25,22 +24,25 @@ export default class Tabs {
         return this.currentTab;
     }
     addEvents() {
-        this.element.addEventListener('click', (e) => {
-            if(e.target.closest('.tabs__tab')) {
-                this.tabs.find(tab => {
-                    if(tab.title === e.target.dataset.title) {
-                        this.currentTab = tab;
-                        this.render();
+        this.on('click', 'tabs__tab', (e) => {
+            this.tabs.find(tab => {
+                if(tab.title === e.target.dataset.title) {
+                    this.currentTab = tab;
+                    this.callBackObj['tab-selected'](this.currentTab);
 
-                        Object.keys(this.callBackObj).map(events => {
-                            this.callBackObj[events](this.currentTab);
-                        })
-                    }
-                })
-            }
-        });
+                    this.render();
+                }
+            })
+        })
     }
     subscribe(eventName, fn) {
        this.callBackObj[eventName] = fn;
+    }
+    on(eventName, elementName, callBack) {
+        this.element.addEventListener(eventName,(e) => {
+            if(e.target.closest(`.${elementName}`)) {
+                callBack(e);
+            }
+        })
     }
 }
